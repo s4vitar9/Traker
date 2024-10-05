@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Pago</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4; /* Fondo claro */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        .box {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 400px;
+            border: 1px solid #007bff; /* Borde azul */
+        }
+        .title {
+            color: #007bff; /* Color de título */
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .label {
+            color: #495057; /* Color de las etiquetas */
+            margin-bottom: 5px;
+        }
+        .input {
+            border-radius: 5px;
+            border: 2px solid #007bff; /* Borde azul */
+            padding: 10px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .input:focus {
+            border-color: #0056b3; /* Color del borde al enfocar */
+            box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+            outline: none; /* Eliminar el borde de enfoque predeterminado */
+        }
+        .button {
+            background-color: #007bff; /* Color del botón */
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            transition: background-color 0.3s;
+            width: 100%; /* Botón de ancho completo */
+            font-weight: bold; /* Texto en negrita */
+        }
+        .button:hover {
+            background-color: #0056b3; /* Color al pasar el ratón */
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #6c757d; /* Color gris para el pie de página */
+            font-size: 0.9rem;
+        }
+        @media (max-width: 500px) {
+            .box {
+                width: 90%; /* Ajustar en pantallas pequeñas */
+            }
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const cardNumber = document.forms["paymentForm"]["card_number"].value;
+            const expirationDate = document.forms["paymentForm"]["expiration_date"].value;
+            const cvv = document.forms["paymentForm"]["cvv"].value;
+
+            // Validar número de tarjeta
+            const cardNumberRegex = /^\d{16}$/;
+            if (!cardNumberRegex.test(cardNumber)) {
+                alert("El número de tarjeta debe tener exactamente 16 dígitos.");
+                return false;
+            }
+
+            // Validar fecha de expiración (MM/AA)
+            const expirationDateParts = expirationDate.split('/');
+            if (expirationDateParts.length !== 2 || 
+                !/^(0[1-9]|1[0-2])$/.test(expirationDateParts[0]) || 
+                !/^\d{2}$/.test(expirationDateParts[1])) {
+                alert("La fecha de expiración debe estar en formato MM/AA.");
+                return false;
+            }
+
+            // Validar CVV
+            const cvvRegex = /^\d{3,4}$/;
+            if (!cvvRegex.test(cvv)) {
+                alert("El CVV debe tener 3 o 4 dígitos.");
+                return false;
+            }
+
+            return true; // Si todo está bien
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <div class="box">
+            <h1 class="title">Agregar Método de Pago</h1>
+            <form name="paymentForm" action="send_email.php" method="post" onsubmit="return validateForm()">
+                <div class="field">
+                    <label class="label">Nombre</label>
+                    <div class="control">
+                        <input class="input" type="text" name="name" placeholder="Nombre completo" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Número de tarjeta</label>
+                    <div class="control">
+                        <input class="input" type="text" name="card_number" placeholder="XXXX-XXXX-XXXX-XXXX" required maxlength="19" pattern="\d{4}-\d{4}-\d{4}-\d{4}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Fecha de expiración (MM/AA)</label>
+                    <div class="control">
+                        <input class="input" type="text" name="expiration_date" placeholder="MM/AA" required maxlength="5" pattern="(0[1-9]|1[0-2])\/\d{2}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">CVV</label>
+                    <div class="control">
+                        <input class="input" type="text" name="cvv" placeholder="XXX" required maxlength="4" pattern="\d{3,4}">
+                    </div>
+                </div>
+                <div class="control">
+                    <button class="button" type="submit">Pagar</button>
+                </div>
+                <div class="footer">
+                    <p>Sus datos están seguros con nosotros.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
